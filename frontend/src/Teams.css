@@ -1,0 +1,137 @@
+.teams-page {
+  min-height: 100vh;
+  padding: 40px;
+  background: #0b0b0b;
+  color: white;
+}
+
+.teams-header {
+  margin-bottom: 45px;
+}
+
+.page-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.teams-header h1 {
+  font-size: 38px;
+  margin: 0 0 8px;
+}
+
+.teams-header p {
+  color: #999;
+  margin: 0;
+}
+
+.conference-section {
+  margin-bottom: 50px;
+}
+
+.conference-section h2 {
+  font-size: 22px;
+  margin-bottom: 22px;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.team-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.team-card {
+  background: #151515;
+  border: 1px solid #242424;
+  border-radius: 14px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-3px);
+  border-color: #444;
+}
+
+.team-logo-container {
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.team-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+
+.team-info h3 {
+  margin: 0 0 5px;
+  font-size: 16px;
+}
+
+.team-info p {
+  margin: 0 0 7px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.team-info span {
+  font-size: 11px;
+  color: #666;
+  font-weight: bold;
+}
+
+.teams-message {
+  color: #aaa;
+  margin-top: 30px;
+}
+
+.teams-message.error {
+  color: #ff6b6b;
+}
+
+@media (max-width: 1000px) {
+  .teams-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 750px) {
+  .teams-page {
+    padding: 25px;
+  }
+
+  .teams-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .teams-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.team-logo-fallback {
+  width: 58px;
+  height: 58px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #252525;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+}

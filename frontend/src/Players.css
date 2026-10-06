@@ -1,0 +1,368 @@
+.players-page {
+  min-height: 100vh;
+  padding: 35px 45px;
+  background: #0b0e14;
+  color: #ffffff;
+}
+
+/* ---------------- HEADER ---------------- */
+
+.players-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.players-top h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.players-count {
+  margin: 5px 0 0;
+  color: #737b8c;
+  font-size: 11px;
+}
+
+/* ---------------- CONTROLS ---------------- */
+
+.players-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.player-search {
+  width: 195px;
+  height: 30px;
+  padding: 0 14px;
+
+  background: #121824;
+  border: 1px solid #202b3d;
+  border-radius: 20px;
+
+  color: #ffffff;
+  font-size: 10px;
+  outline: none;
+}
+
+.player-search::placeholder {
+  color: #697284;
+}
+
+.player-search:focus {
+  border-color: #34445e;
+}
+
+/* ---------------- CONFERENCE FILTER ---------------- */
+
+.conference-filter {
+  display: flex;
+  align-items: center;
+
+  height: 30px;
+  padding: 2px;
+
+  background: #121824;
+  border: 1px solid #202b3d;
+  border-radius: 20px;
+}
+
+.filter-button {
+  border: none;
+  background: transparent;
+
+  color: #7e8798;
+  font-size: 10px;
+
+  padding: 7px 20px;
+  border-radius: 16px;
+
+  cursor: pointer;
+}
+
+.filter-button.active {
+  background: #1d2a40;
+  color: #ffffff;
+}
+
+.filter-button:hover {
+  color: #ffffff;
+}
+
+/* ---------------- TABLE ---------------- */
+
+.players-table-container {
+  width: 100%;
+  background: #111722;
+
+  border: 1px solid #202b3d;
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.players-table-header,
+.player-row {
+  display: grid;
+  grid-template-columns: 120px 1.6fr 160px 1fr;
+  align-items: center;
+}
+
+/* TABLE HEADER */
+
+.players-table-header {
+  height: 38px;
+
+  padding: 0 16px;
+
+  color: #788296;
+  font-size: 9px;
+  font-weight: 600;
+
+  border-bottom: 1px solid #202b3d;
+}
+
+/* PLAYER ROW */
+
+.player-row {
+  min-height: 45px;
+
+  padding: 0 16px;
+
+  border-bottom: 1px solid #1c2533;
+
+  font-size: 10px;
+
+  transition: background 0.15s ease;
+}
+
+.player-row:hover {
+  background: #182236;
+}
+
+.player-row:last-of-type {
+  border-bottom: none;
+}
+
+/* ---------------- TEAM ---------------- */
+
+.team-column {
+  display: flex;
+  align-items: center;
+}
+
+.team-circle {
+  width: 25px;
+  height: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid;
+  border-radius: 50%;
+
+  color: #e8edf5;
+
+  font-size: 8px;
+  font-weight: 600;
+}
+
+/* ---------------- PLAYER NAME ---------------- */
+
+.name-column {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.player-initials {
+  width: 25px;
+  height: 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #1d2737;
+
+  color: #8c96a8;
+
+  font-size: 8px;
+  font-weight: 600;
+
+  flex-shrink: 0;
+}
+
+.player-name {
+  color: #dce1e9;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ---------------- CONFERENCE ---------------- */
+
+.conference-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 60px;
+
+  padding: 5px 10px;
+
+  border-radius: 12px;
+
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.conference-badge.eastern {
+  background: #12345e;
+  color: #2d8cff;
+}
+
+.conference-badge.western {
+  background: #4b1822;
+  color: #ff4257;
+}
+
+/* ---------------- DIVISION ---------------- */
+
+.division {
+  color: #a3abba;
+  font-size: 9px;
+}
+
+/* ---------------- FOOTER ---------------- */
+
+.players-table-footer {
+  height: 35px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 15px;
+
+  color: #6f7889;
+  font-size: 8px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination button {
+  width: 20px;
+  height: 20px;
+
+  border: none;
+  background: transparent;
+
+  color: #9aa4b5;
+
+  cursor: pointer;
+
+  font-size: 15px;
+}
+
+.pagination button:hover:not(:disabled) {
+  color: #ffffff;
+}
+
+.pagination button:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+/* ---------------- EMPTY / ERROR ---------------- */
+
+.no-players {
+  padding: 40px;
+
+  text-align: center;
+
+  color: #777f8f;
+  font-size: 11px;
+}
+
+.players-message {
+  color: #9aa3b2;
+  margin-top: 30px;
+}
+
+.players-message.error {
+  color: #ff5c70;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-width: 900px) {
+
+  .players-page {
+    padding: 25px;
+  }
+
+  .players-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .players-controls {
+    width: 100%;
+  }
+
+  .player-search {
+    flex: 1;
+  }
+
+  .players-table-header,
+  .player-row {
+    grid-template-columns:
+      80px
+      1.5fr
+      120px
+      1fr;
+  }
+}
+
+@media (max-width: 650px) {
+
+  .players-page {
+    padding: 20px;
+  }
+
+  .players-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .player-search {
+    width: auto;
+  }
+
+  .conference-filter {
+    justify-content: space-between;
+  }
+
+  .filter-button {
+    flex: 1;
+  }
+
+  .players-table-container {
+    overflow-x: auto;
+  }
+
+  .players-table {
+    min-width: 650px;
+  }
+}
