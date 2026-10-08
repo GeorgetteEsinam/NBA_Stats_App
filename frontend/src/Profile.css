@@ -1,0 +1,981 @@
+/* ==========================================
+   PROFILE PAGE
+========================================== */
+
+.profile-page {
+  min-height: 100vh;
+  background: #080d15;
+  color: #f4f6fb;
+}
+
+
+/* ==========================================
+   NAVBAR
+========================================== */
+
+.profile-navbar {
+  height: 64px;
+  background: #0b1019;
+  border-bottom: 1px solid #202938;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 30px;
+}
+
+
+.profile-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+
+.profile-nba-logo {
+  width: 62px;
+  height: 44px;
+
+  border: 1px solid #f0445e;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+  color: #aab3c4;
+}
+
+
+.profile-brand {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+
+.profile-nav-links {
+  display: flex;
+  gap: 40px;
+  margin-left: 25px;
+}
+
+
+.profile-nav-links button {
+  border: none;
+  background: none;
+  color: #778196;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+
+.profile-nav-links button:hover {
+  color: white;
+}
+
+
+/* ==========================================
+   NAV RIGHT
+========================================== */
+
+.profile-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+
+.profile-search {
+  width: 185px;
+  height: 34px;
+
+  border: 1px solid #243047;
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 13px;
+
+  color: #68748a;
+}
+
+
+.profile-search input {
+  width: 100%;
+
+  background: transparent;
+  border: none;
+  outline: none;
+
+  color: white;
+
+  padding-left: 8px;
+  font-size: 11px;
+}
+
+
+.profile-search input::placeholder {
+  color: #667188;
+}
+
+
+.menu-button {
+  background: none;
+  border: none;
+
+  color: white;
+
+  font-size: 23px;
+  cursor: pointer;
+
+  padding: 4px;
+}
+
+
+.nav-user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+.nav-user strong {
+  font-size: 11px;
+}
+
+
+.nav-user small {
+  color: #7a8498;
+  font-size: 8px;
+}
+
+
+/* ==========================================
+   CONTENT
+========================================== */
+
+.profile-content {
+  max-width: 1020px;
+  margin: 0 auto;
+
+  padding: 28px 0 60px;
+}
+
+
+.profile-heading {
+  margin-bottom: 25px;
+}
+
+
+.profile-heading h1 {
+  margin: 0;
+  font-size: 27px;
+}
+
+
+.profile-heading p {
+  margin-top: 6px;
+
+  color: #7c879b;
+  font-size: 12px;
+}
+
+
+/* ==========================================
+   MAIN LAYOUT
+========================================== */
+
+.profile-layout {
+  display: grid;
+
+  grid-template-columns: 290px 1fr;
+
+  gap: 18px;
+}
+
+
+/* ==========================================
+   USER CARD
+========================================== */
+
+.user-card {
+  background: #111827;
+
+  border: 1px solid #202c40;
+  border-radius: 14px;
+
+  min-height: 250px;
+
+  padding: 25px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: relative;
+}
+
+
+.avatar {
+  width: 80px;
+  height: 80px;
+
+  border-radius: 50%;
+
+  background: #1d293c;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #9aa6bb;
+
+  font-size: 21px;
+  font-weight: 600;
+
+  margin-bottom: 13px;
+}
+
+
+.avatar-status {
+  position: absolute;
+
+  top: 88px;
+  left: calc(50% + 22px);
+
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: #f04b62;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+}
+
+
+.user-card h2 {
+  margin: 0;
+
+  font-size: 17px;
+}
+
+
+.user-email {
+  margin: 6px 0 14px;
+
+  color: #788398;
+
+  font-size: 10px;
+}
+
+
+.account-status {
+  background: #063c2d;
+  color: #21c990;
+
+  padding: 5px 11px;
+
+  border-radius: 20px;
+
+  font-size: 9px;
+}
+
+
+.member-since {
+  width: 100%;
+
+  margin-top: auto;
+  padding-top: 17px;
+
+  border-top: 1px solid #253044;
+
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 10px;
+}
+
+
+.member-since span {
+  color: #727e93;
+}
+
+
+.member-since strong {
+  color: #e8ebf2;
+}
+
+
+/* ==========================================
+   RIGHT PANELS
+========================================== */
+
+.profile-right {
+  display: flex;
+  flex-direction: column;
+
+  gap: 17px;
+}
+
+
+.profile-panel {
+  background: #111827;
+
+  border: 1px solid #202c40;
+
+  border-radius: 14px;
+
+  padding: 18px;
+}
+
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 17px;
+}
+
+
+.panel-title-row h2 {
+  margin: 0;
+
+  font-size: 14px;
+}
+
+
+.edit-button {
+  width: 100px;
+  height: 30px;
+
+  border-radius: 18px;
+
+  border: 1px solid #26334a;
+
+  background: transparent;
+
+  color: #d3d9e4;
+
+  cursor: pointer;
+}
+
+
+.add-button {
+  border: none;
+  background: none;
+
+  color: #5793ff;
+
+  font-size: 10px;
+
+  cursor: pointer;
+}
+
+
+/* ==========================================
+   PERSONAL INFORMATION
+========================================== */
+
+.personal-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 16px 20px;
+}
+
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+.profile-field label {
+  color: #727e93;
+
+  font-size: 9px;
+}
+
+
+.profile-field input {
+  height: 36px;
+
+  background: #0b111b;
+
+  border: 1px solid #202c3f;
+
+  border-radius: 8px;
+
+  padding: 0 11px;
+
+  color: white;
+
+  outline: none;
+
+  font-size: 11px;
+}
+
+
+.profile-field input::placeholder {
+  color: #5f6b7f;
+}
+
+
+.save-button {
+  margin-top: 16px;
+
+  background: #f0445e;
+
+  border: none;
+
+  border-radius: 8px;
+
+  color: white;
+
+  padding: 9px 17px;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* ==========================================
+   FAVORITES
+========================================== */
+
+.favorite-list {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 12px;
+}
+
+
+.favorite-team,
+.favorite-player {
+  min-height: 56px;
+
+  background: #0c131f;
+
+  border: 1px solid #202c3f;
+
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 9px 11px;
+
+  gap: 10px;
+}
+
+
+.team-circle,
+.player-avatar {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+
+.team-circle.purple {
+  border: 1px solid #a05bff;
+  color: #c08bff;
+}
+
+
+.team-circle.yellow {
+  border: 1px solid #e0bb25;
+  color: #f0cf42;
+}
+
+
+.team-circle.green {
+  border: 1px solid #6ac832;
+  color: #8be653;
+}
+
+
+.player-avatar {
+  background: #1b273a;
+  color: #8793a8;
+}
+
+
+.favorite-info {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  flex: 1;
+}
+
+
+.favorite-info small {
+  color: #69758a;
+
+  font-size: 8px;
+
+  margin-bottom: 2px;
+}
+
+
+.favorite-info strong {
+  font-size: 10px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.remove-button {
+  background: none;
+  border: none;
+
+  color: #5d687a;
+
+  font-size: 17px;
+
+  cursor: pointer;
+}
+
+
+.remove-button:hover {
+  color: #f0445e;
+}
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+.profile-logout {
+  background: #32131b;
+
+  border: 1px solid #4b1b26;
+
+  color: #f15b70;
+
+  border-radius: 9px;
+
+  padding: 12px;
+
+  cursor: pointer;
+
+  font-size: 11px;
+}
+
+
+.profile-logout:hover {
+  background: #421722;
+}
+
+
+/* ==========================================
+   LOADING
+========================================== */
+
+.profile-loading {
+  min-height: 100vh;
+
+  background: #080d15;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 850px) {
+
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-nav-links {
+    display: none;
+  }
+
+  .favorite-list {
+    grid-template-columns: 1fr;
+  }
+
+  .personal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-content {
+    padding: 25px 18px;
+  }
+
+}
+/* ==========================================
+   SLIDING MENU
+========================================== */
+
+.menu-button {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 25px;
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+}
+
+.menu-button:hover {
+  opacity: 0.75;
+}
+
+
+/* DARK BACKGROUND OVER PAGE */
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 999;
+}
+
+
+/* RIGHT SIDE MENU */
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  width: 390px;
+  max-width: 90vw;
+  height: 100vh;
+
+  background: #101827;
+
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+
+  border-left: 3px solid #f0445d;
+
+  box-shadow: -10px 0 35px rgba(0, 0, 0, 0.35);
+
+  animation: slideMenuIn 0.25s ease-out;
+}
+
+
+/* SLIDE ANIMATION */
+
+@keyframes slideMenuIn {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+
+/* MENU HEADER */
+
+.side-menu-header {
+  height: 70px;
+
+  padding: 0 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  color: #8c96aa;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+
+.close-menu {
+  border: none;
+  background: transparent;
+
+  color: white;
+
+  font-size: 32px;
+  font-weight: 300;
+
+  cursor: pointer;
+
+  line-height: 1;
+}
+
+.close-menu:hover {
+  color: #f0445d;
+}
+
+
+/* USER INFORMATION */
+
+.side-menu-user {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 5px 24px 25px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+
+.side-menu-avatar {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+
+  background: #1c2940;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #8994aa;
+
+  font-weight: 700;
+  font-size: 14px;
+}
+
+
+.side-menu-user strong {
+  display: block;
+
+  color: #f4f6fa;
+
+  font-size: 14px;
+
+  margin-bottom: 4px;
+}
+
+
+.side-menu-user small {
+  display: block;
+
+  color: #6f7b90;
+
+  font-size: 10px;
+}
+
+
+/* MENU ITEMS */
+
+.side-menu-items {
+  padding: 18px 12px;
+}
+
+
+.side-menu-item {
+  width: 100%;
+
+  border: none;
+  background: transparent;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 13px 12px;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  margin-bottom: 5px;
+}
+
+
+.side-menu-item:hover {
+  background: #18243a;
+}
+
+
+/* ACTIVE PROFILE ITEM */
+
+.side-menu-item.active {
+  background: #1a2943;
+}
+
+
+/* ICON */
+
+.menu-item-icon {
+  width: 32px;
+  height: 32px;
+
+  border-radius: 9px;
+
+  background: #1b2940;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #dce3ef;
+
+  font-size: 17px;
+
+  flex-shrink: 0;
+}
+
+
+/* TEXT */
+
+.menu-item-text {
+  flex: 1;
+}
+
+
+.menu-item-text strong {
+  display: block;
+
+  color: #f0f3f8;
+
+  font-size: 13px;
+
+  margin-bottom: 3px;
+}
+
+
+.menu-item-text small {
+  display: block;
+
+  color: #68758b;
+
+  font-size: 10px;
+}
+
+
+/* ARROW */
+
+.menu-arrow {
+  color: #78859a;
+
+  font-size: 24px;
+
+  line-height: 1;
+}
+
+
+/* SUBSCRIPTION STATUS */
+
+.subscription-status {
+  background: #073f32;
+
+  color: #17d39c;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  padding: 5px 10px;
+
+  border-radius: 20px;
+}
+
+
+/* BOTTOM */
+
+.side-menu-bottom {
+  margin-top: auto;
+
+  padding: 20px 12px 24px;
+}
+
+
+.side-menu-logout {
+  width: 100%;
+
+  border: none;
+
+  background: #35151e;
+
+  color: #f0445d;
+
+  padding: 13px 16px;
+
+  border-radius: 11px;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  font-weight: 700;
+  font-size: 12px;
+
+  text-align: left;
+}
+
+
+.side-menu-logout:hover {
+  background: #461923;
+}
+
+
+/* ==========================================
+   PROFILE LOADING
+========================================== */
+
+.profile-loading {
+  min-height: 100vh;
+
+  background: #080d15;
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+}

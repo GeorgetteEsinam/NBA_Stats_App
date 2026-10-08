@@ -115,17 +115,13 @@ function TeamProfile() {
       {/* TABS */}
       <div className="team-tabs">
 
-        <button className="team-tab">
-          Schedule
-        </button>
+        
 
         <button className="team-tab active">
           Roster
         </button>
 
-        <button className="team-tab">
-          Standings
-        </button>
+        
 
       </div>
 
@@ -196,30 +192,9 @@ function TeamProfile() {
 
         </section>
 
-        {/* TEAM LEADERS */}
-        <section className="leaders-section">
+      
 
-          <h2>Team leaders</h2>
-
-          <div className="leader-card">
-            <span>Points</span>
-            <strong>—</strong>
-            <small>Stats coming soon</small>
-          </div>
-
-          <div className="leader-card">
-            <span>Rebounds</span>
-            <strong>—</strong>
-            <small>Stats coming soon</small>
-          </div>
-
-          <div className="leader-card">
-            <span>Assists</span>
-            <strong>—</strong>
-            <small>Stats coming soon</small>
-          </div>
-
-        </section>
+       
 
       </div>
 

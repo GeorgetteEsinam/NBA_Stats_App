@@ -10,6 +10,10 @@ import {
 import Teams from "./Teams";
 import Players from "./Players";
 import TeamProfile from "./TeamProfile";
+import Login from "./Auth/Login";
+import Signup from "./Auth/Signup";
+import PlayerDetails from "./PlayerDetails";
+import Profile from "./Profile";
 import "./App.css";
 
 
@@ -44,11 +48,20 @@ function normalizeName(name) {
 function Dashboard() {
   const [players, setPlayers] = useState([]);
   const [search, setSearch] = useState("");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+  const savedUser = localStorage.getItem("user");
+
+  if (savedUser) {
+    setUser(JSON.parse(savedUser));
+  }
+}, []);
 
 
-  // ==========================================
+  
   // GET PLAYERS FROM MYSQL
-  // ==========================================
+
 
   useEffect(() => {
     fetch("http://localhost:5000/api/players")
@@ -179,16 +192,12 @@ function Dashboard() {
 
           <div className="profile">
 
-            <div className="profile-avatar">
-              ML
-            </div>
-
+            
             <div className="profile-info">
 
               <strong>
-                George
-              </strong>
-
+  {user?.name || "Guest"}
+        </strong>
               <small>
                 League Pass
               </small>
@@ -798,9 +807,8 @@ function Dashboard() {
 }
 
 
-// ==========================================
 // APP ROUTING
-// ==========================================
+
 
 function App() {
   return (
@@ -816,6 +824,10 @@ function App() {
   />
 
   <Route path="/players" element={<Players />} />
+  <Route path="/players/:playerId" element={<PlayerDetails />} />
+  <Route path="/profile" element={<Profile />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/signup" element={<Signup />} />
 </Routes>
     </BrowserRouter>
   );

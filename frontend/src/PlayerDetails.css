@@ -1,0 +1,1181 @@
+.player-details-page {
+  min-height: 100vh;
+  background: #070b14;
+  color: #f5f7fb;
+  font-family: Arial, sans-serif;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.player-details-navbar {
+  height: 72px;
+  padding: 0 34px;
+  background: #0b101c;
+  border-bottom: 1px solid #1c2433;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-left,
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-left {
+  gap: 18px;
+}
+
+.nba-logo {
+  width: 34px;
+  height: 46px;
+
+  background: linear-gradient(
+    180deg,
+    #ef233c,
+    #1547a8
+  );
+
+  border-radius: 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 9px;
+  font-weight: 800;
+  color: white;
+}
+
+.nba-brand {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.details-nav {
+  display: flex;
+  gap: 28px;
+  margin-left: 25px;
+}
+
+.details-nav span {
+  color: #8993a5;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.details-nav span:hover,
+.details-nav span.active {
+  color: white;
+}
+
+.navbar-right {
+  gap: 22px;
+}
+
+.details-search {
+  width: 220px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  background: #121927;
+  border: 1px solid #252e40;
+  border-radius: 7px;
+
+  padding: 0 12px;
+}
+
+.details-search span {
+  color: #7d8799;
+  font-size: 18px;
+}
+
+.details-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+
+  background: transparent;
+  color: white;
+
+  font-size: 13px;
+}
+
+.details-search input::placeholder {
+  color: #687286;
+}
+
+.details-menu {
+  font-size: 21px;
+  color: #c8ced9;
+  cursor: pointer;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.player-details-content {
+  width: 100%;
+  max-width: 1250px;
+
+  margin: 0 auto;
+
+  padding: 30px 35px 70px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.player-back-button {
+  background: transparent;
+  border: none;
+
+  color: #aeb7c7;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  padding: 0;
+
+  margin-bottom: 20px;
+}
+
+.player-back-button:hover {
+  color: white;
+}
+
+
+/* ==================================================
+   MAIN PLAYER LAYOUT
+================================================== */
+
+.player-dashboard-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(300px, 1fr);
+
+  grid-template-areas:
+    "main side";
+
+  gap: 20px;
+
+  align-items: start;
+}
+
+.player-main-column {
+  grid-area: main;
+
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.player-side-column {
+  grid-area: side;
+
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
+  align-self: start;
+}
+
+
+/* ==================================================
+   HERO
+================================================== */
+
+.player-hero {
+  min-height: 275px;
+
+  border-radius: 14px;
+
+  padding: 32px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(67, 112, 255, 0.35),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #101f48,
+      #162e69 55%,
+      #101b39
+    );
+
+  border: 1px solid #243967;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.player-hero-left {
+  display: flex;
+
+  align-items: center;
+
+  gap: 22px;
+
+  z-index: 2;
+
+  min-width: 0;
+}
+
+.player-team-circle {
+  width: 82px;
+  height: 82px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  border: 2px solid #7189bd;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 19px;
+
+  font-weight: 800;
+
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.player-team-info {
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.player-team-name {
+  color: #aebbd5;
+
+  font-size: 14px;
+
+  margin-bottom: 7px;
+}
+
+.player-position {
+  color: #d4dcf0;
+
+  font-size: 13px;
+}
+
+.player-team-info h1 {
+  font-size: 40px;
+
+  margin: 8px 0 0;
+
+  letter-spacing: -1px;
+}
+
+
+/* ==================================================
+   HERO STATS
+================================================== */
+
+.player-hero-stats {
+  display: flex;
+
+  gap: 38px;
+
+  margin-left: auto;
+
+  margin-right: 210px;
+
+  z-index: 2;
+}
+
+.hero-stat {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+}
+
+.hero-stat strong {
+  font-size: 27px;
+}
+
+.hero-stat span {
+  color: #a8b5d0;
+
+  font-size: 11px;
+
+  margin-top: 5px;
+}
+
+
+/* ==================================================
+   PLAYER PHOTO
+================================================== */
+
+.player-photo-area {
+  position: absolute;
+
+  right: 20px;
+
+  bottom: 0;
+
+  width: 190px;
+
+  height: 245px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: flex-end;
+}
+
+.player-photo-area img {
+  max-width: 100%;
+
+  max-height: 100%;
+
+  object-fit: contain;
+}
+
+.player-photo-placeholder {
+  width: 150px;
+
+  height: 200px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 55px;
+
+  font-weight: 800;
+
+  color: rgba(255, 255, 255, 0.15);
+}
+
+
+/* ==================================================
+   TABS
+================================================== */
+
+.player-tabs {
+  display: flex;
+
+  gap: 8px;
+
+  margin: 0;
+}
+
+.player-tab {
+  border: none;
+
+  background: transparent;
+
+  color: #737e92;
+
+  padding: 10px 20px;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+}
+
+.player-tab.active {
+  background: #1a2438;
+
+  color: white;
+}
+
+
+/* ==================================================
+   BIO CARD
+================================================== */
+
+.player-side-column .player-bio-card {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  background: #0d131f;
+
+  border: 1px solid #1d2635;
+
+  border-radius: 12px;
+
+  padding: 23px;
+
+  margin: 0;
+
+  position: relative;
+
+  display: block;
+}
+
+.player-side-column .player-bio-card .card-heading h2 {
+  margin: 0 0 20px;
+
+  font-size: 18px;
+}
+
+.bio-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px 15px;
+}
+
+.bio-item {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  min-width: 0;
+}
+
+.bio-item span {
+  color: #727d90;
+
+  font-size: 12px;
+}
+
+.bio-item strong {
+  font-size: 13px;
+
+  color: #e5e9f0;
+
+  overflow-wrap: break-word;
+}
+
+
+/* ==================================================
+   SEASON AVERAGES
+================================================== */
+
+.season-section {
+  margin-top: 0;
+
+  width: 100%;
+}
+
+.section-title {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-bottom: 14px;
+}
+
+.section-title h2 {
+  margin: 0;
+
+  font-size: 18px;
+}
+
+.section-title p {
+  margin: 5px 0 0;
+
+  color: #737e91;
+
+  font-size: 12px;
+}
+
+.season-table {
+  width: 100%;
+
+  background: #0d131f;
+
+  border: 1px solid #1d2635;
+
+  border-radius: 12px;
+
+  overflow: hidden;
+}
+
+.season-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 2fr)
+    repeat(4, minmax(0, 1fr));
+
+  padding: 17px 20px;
+
+  border-bottom: 1px solid #1b2432;
+
+  font-size: 13px;
+
+  box-sizing: border-box;
+}
+
+.season-row:last-child {
+  border-bottom: none;
+}
+
+.season-header {
+  color: #707b8f;
+
+  font-size: 11px;
+
+  text-transform: uppercase;
+}
+
+
+/* ==================================================
+   LAST 5 GAMES
+================================================== */
+
+.player-side-column .last-games-section {
+  width: 100%;
+
+  margin: 0;
+}
+
+.player-side-column .last-games-section .section-title {
+  display: block;
+
+  margin-bottom: 12px;
+}
+
+.player-side-column .last-games-section .section-title h2 {
+  margin: 0;
+
+  font-size: 18px;
+}
+
+.player-side-column .last-games-section .section-title p {
+  margin: 5px 0 0;
+
+  color: #737e91;
+
+  font-size: 12px;
+}
+
+.last-games-card {
+  width: 100%;
+
+  min-height: 190px;
+
+  background: #0d131f;
+
+  border: 1px solid #1d2635;
+
+  border-radius: 12px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+.empty-games {
+  color: #657084;
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+/* ==================================================
+   LOADING / ERROR
+================================================== */
+
+.player-details-message {
+  min-height: 100vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #9ca6b8;
+}
+
+.back-players-button {
+  margin-top: 15px;
+
+  background: #ed4264;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 7px;
+
+  padding: 11px 18px;
+
+  cursor: pointer;
+}
+
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (max-width: 900px) {
+
+  .details-nav {
+    display: none;
+  }
+
+  .details-search {
+    display: none;
+  }
+
+  /*
+     Turn the two-column player layout
+     into one column.
+  */
+
+  .player-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .player-hero {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 30px;
+  }
+
+  .player-hero-stats {
+    margin: 0;
+  }
+
+  .player-photo-area {
+    opacity: 0.35;
+  }
+
+  .bio-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 600px) {
+
+  .player-details-navbar {
+    padding: 0 18px;
+  }
+
+  .player-details-content {
+    padding: 22px 18px 50px;
+  }
+
+  .player-team-info h1 {
+    font-size: 28px;
+  }
+
+  .player-hero {
+    padding: 23px;
+  }
+
+  .bio-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .season-row {
+    padding: 14px 12px;
+
+    font-size: 11px;
+  }
+}
+.player-side-column .player-info-card,
+.player-side-column .player-bio-card {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+/* =========================================================
+   PLAYER DETAILS - FINAL LAYOUT FIX
+   ========================================================= */
+
+/* Prevent the page from creating horizontal overflow */
+.player-details-page {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Main content stays inside the screen */
+.player-details-content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 28px 32px 50px;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   MAIN TWO-COLUMN LAYOUT
+   ========================================================= */
+
+.player-dashboard-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(360px, 1fr);
+  gap: 26px;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+.player-main-column,
+.player-side-column {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.player-main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.player-side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* =========================================================
+   HERO CARD
+   ========================================================= */
+
+.player-hero {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.player-hero-left {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.player-team-info {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.player-team-info h1 {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   BIO CARD
+   ========================================================= */
+
+.player-side-column .player-info-card,
+.player-side-column .player-bio-card {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.player-bio-card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.bio-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 34px;
+  row-gap: 24px;
+  box-sizing: border-box;
+}
+
+.bio-item {
+  min-width: 0;
+}
+
+.bio-item strong {
+  display: block;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   SEASON AVERAGES
+   ========================================================= */
+
+.season-section {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.season-table {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.season-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(120px, 1.5fr) repeat(4, minmax(50px, 0.7fr));
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.season-row > span {
+  min-width: 0;
+}
+
+/* =========================================================
+   LAST 5 GAMES
+========================================================= */
+
+.player-side-column .last-games-section {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.player-side-column .last-games-section .section-title {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.player-side-column .last-games-section .section-title h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.player-side-column .last-games-section .section-title p {
+  margin: 5px 0 0;
+  color: #737e91;
+  font-size: 12px;
+}
+
+
+/* CARD */
+
+.last-games-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 190px;
+
+  background: #0d131f;
+  border: 1px solid #1d2635;
+  border-radius: 12px;
+
+  overflow: hidden;
+  box-sizing: border-box;
+
+  display: block;
+}
+
+
+/* TABLE */
+
+.games-list {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+  box-sizing: border-box;
+}
+
+.games-list th {
+  color: #8f9bb3;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.games-list td {
+  color: #ffffff;
+  font-size: 12px;
+  text-align: center;
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.games-list th:first-child,
+.games-list td:first-child {
+  width: 72px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.games-list th:nth-child(2),
+.games-list td:nth-child(2) {
+  text-align: left;
+}
+
+.games-list th:nth-child(n + 3),
+.games-list td:nth-child(n + 3) {
+  width: 44px;
+}
+
+.games-list tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+.games-list td:first-child {
+  color: #aab4c7;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   OPPONENT
+========================================================= */
+
+.game-opponent {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  overflow: hidden;
+}
+
+.game-opponent strong {
+  flex-shrink: 0;
+
+  color: #ffffff;
+
+  font-size: 10px;
+
+  background: #202d47;
+
+  padding: 4px 6px;
+
+  border-radius: 5px;
+}
+
+.game-opponent span {
+  min-width: 0;
+
+  color: #d7dce6;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   LOADING / EMPTY
+========================================================= */
+
+.empty-games {
+  color: #657084;
+
+  font-size: 13px;
+
+  text-align: center;
+
+  padding: 30px 15px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .player-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .player-side-column {
+    width: 100%;
+  }
+
+  .player-bio-card,
+  .last-games-section {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+  .player-details-content {
+    padding: 20px 16px 40px;
+  }
+
+  .bio-grid {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+  }
+
+  .games-list th,
+  .games-list td {
+    padding: 10px 4px;
+  }
+
+  .games-list th,
+  .games-list td {
+    font-size: 9px;
+  }
+
+  .games-list th:first-child,
+  .games-list td:first-child {
+    width: 54px;
+  }
+
+  .games-list th:nth-child(n + 3),
+  .games-list td:nth-child(n + 3) {
+    width: 32px;
+  }
+
+  .games-list th {
+    font-size: 8px;
+  }
+
+  .game-opponent {
+    gap: 6px;
+  }
+
+  .game-opponent span {
+    display: none;
+  }
+
+  .game-opponent strong {
+    font-size: 9px;
+    padding: 4px 5px;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL SCREENS
+========================================================= */
+
+@media (max-width: 450px) {
+
+  .bio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .season-row {
+    grid-template-columns:
+      minmax(90px, 1.5fr)
+      repeat(4, 40px);
+
+    gap: 6px;
+
+    font-size: 12px;
+  }
+
+  .games-list th:first-child,
+  .games-list td:first-child {
+    width: 50px;
+  }
+
+  .games-list th:nth-child(n + 3),
+  .games-list td:nth-child(n + 3) {
+    width: 29px;
+  }
+}
+
+
+/* =========================================================
+   SECTION TITLES
+========================================================= */
+
+.section-title {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.section-title h2 {
+  margin-bottom: 5px;
+}
+
+.section-title p {
+  margin: 0;
+}

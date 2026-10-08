@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+import { useNavigate} from "react-router-dom";
 import "./Players.css";
 
 function Players() {
+  const navigate = useNavigate();
   const [players, setPlayers] = useState([]);
   const [search, setSearch] = useState("");
   const [conferenceFilter, setConferenceFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const playersPerPage = 14;
 
   useEffect(() => {
@@ -243,6 +244,7 @@ function Players() {
               <div
                 className="player-row"
                 key={player.id}
+                onClick={() => navigate(`/players/${player.id}`)}
               >
 
                 {/* TEAM */}
