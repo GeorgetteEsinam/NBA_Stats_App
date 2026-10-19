@@ -1,25 +1,15 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { clearSession, getStoredUser } from "../services/auth.js";
 import "./Menu.css";
 
 function Menu({ isOpen, onClose }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, [isOpen]);
+  const user = getStoredUser();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
+    clearSession();
     onClose();
     navigate("/login");
   };

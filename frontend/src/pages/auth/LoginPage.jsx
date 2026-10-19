@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { saveSession } from "../../services/auth.js";
+import { loginUser } from "../../services/api.js";
 import "./Auth.css";
 
 function Login() {
@@ -8,48 +10,22 @@ function Login() {
   const [password, setPassword] = useState("");
   
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const response = await fetch("http://localhost:5000/api/auth/Login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+    try {
+      const data = await loginUser({
+          email,
+          password,
+        });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.message);
-      return;
+      saveSession(data);
+      alert("Login successful!");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Could not connect to the server.");
     }
-     // Save the JWT token
-    localStorage.setItem("token", data.token);
-
-    // Save the logged-in user's information
-    localStorage.setItem("user", JSON.stringify(data.user));
-
-    console.log("Logged in user:", data.user);
-
-    alert("Login successful!");
-
-
-localStorage.setItem("user", JSON.stringify(data.user));
-
-navigate("/");
-
-    console.log("Logged in user:", data.user);
-
-  } catch (error) {
-    console.error(error);
-    alert("Could not connect to the server.");
-  }
-};
+  };
 
 return (
     <div className="auth-page">

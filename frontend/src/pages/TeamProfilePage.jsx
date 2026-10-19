@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "./TeamProfile.css";
+import { getTeam, getTeamPlayers } from "../services/api.js";
+import "./TeamProfilePage.css";
 
 function TeamProfile() {
   const { teamId } = useParams();
@@ -12,23 +13,8 @@ function TeamProfile() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`http://localhost:5000/api/teams/${teamId}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to fetch team");
-          }
-
-          return response.json();
-        }),
-
-      fetch(`http://localhost:5000/api/teams/${teamId}/players`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to fetch players");
-          }
-
-          return response.json();
-        }),
+      getTeam(teamId),
+      getTeamPlayers(teamId),
     ])
       .then(([teamData, playerData]) => {
         setTeam(teamData);

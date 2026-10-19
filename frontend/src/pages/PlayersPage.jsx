@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useNavigate} from "react-router-dom";
-import "./Players.css";
+import { useNavigate } from "react-router-dom";
+import { getPlayers } from "../services/api.js";
+import "./PlayersPage.css";
 
 function Players() {
   const navigate = useNavigate();
@@ -13,14 +14,7 @@ function Players() {
   const playersPerPage = 14;
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/players")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch players");
-        }
-
-        return response.json();
-      })
+    getPlayers()
       .then((data) => {
         setPlayers(data);
         setLoading(false);

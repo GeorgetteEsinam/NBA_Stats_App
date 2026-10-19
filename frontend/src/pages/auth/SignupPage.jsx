@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { signupUser } from "../../services/api.js";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -11,32 +12,12 @@ function Signup() {
   e.preventDefault();
 
   try {
-    const response = await fetch("http://localhost:5000/api/auth/Signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.message);
-      return;
-    }
+    await signupUser({ name, email, password });
 
     alert("Account created successfully!");
-
-    console.log("Registered user:", data);
-
   } catch (error) {
     console.error(error);
-    alert("Could not connect to the server.");
+    alert(error.message || "Could not connect to the server.");
   }
 };
   return (

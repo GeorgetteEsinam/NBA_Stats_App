@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import "./Teams.css";
+import { getTeams } from "../services/api.js";
+import "./TeamsPage.css";
 
 function Teams() {
   const [teams, setTeams] = useState([]);
@@ -8,14 +9,7 @@ function Teams() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/teams")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch teams");
-        }
-
-        return response.json();
-      })
+    getTeams()
       .then((data) => {
         setTeams(data);
         setLoading(false);

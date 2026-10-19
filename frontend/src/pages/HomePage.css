@@ -1067,3 +1067,135 @@
   }
 
 }
+
+/* ================================
+   PRO-LOCKED UPCOMING GAMES
+================================ */
+
+.pro-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 1px solid rgba(239, 35, 60, 0.3);
+  border-radius: 20px;
+  color: #ff6678;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: default;
+}
+
+.pro-label-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ef233c;
+}
+
+
+
+.schedule-preview {
+  position: relative;
+  isolation: isolate;
+  min-height: 280px;
+  overflow: hidden;
+}
+
+.games-list.schedule-blurred {
+  filter: blur(2px);
+  opacity: 0.55;
+  user-select: none;
+  pointer-events: none;
+}
+
+.pro-lock-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: rgba(1, 12, 15, 0.80);
+  text-align: center;
+}
+
+
+.pro-lock-content {
+  width: 100%;
+  max-width: 330px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+
+.pro-eyebrow {
+  margin-bottom: 6px;
+  color: #ff6678;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.pro-lock-content h3 {
+  margin: 0 0 7px;
+  color: #ffffff;
+  font-size: clamp(15px, 2vw, 19px);
+  font-weight: 750;
+}
+
+.pro-lock-content > p {
+  margin: 0 0 13px;
+  max-width: 285px;
+  color: #aab4c5;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.pro-unlock-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 36px;
+  padding: 0 18px;
+  color: #ffffff;
+  background: #ef233c;
+  border: 1px solid #ef233c;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.pro-unlock-button:hover {
+  background: #d91d34;
+  transform: translateY(-1px);
+}
+
+.pro-notice {
+  margin: 10px 0 0 !important;
+  color: #ffd1d7 !important;
+  font-size: 9px !important;
+}
+
+@media (max-width: 500px) {
+  .schedule-preview {
+    min-height: 220px;
+  }
+
+  .pro-lock-overlay {
+    padding: 12px;
+  }
+
+  .pro-lock-content h3 {
+    font-size: 16px;
+  }
+}

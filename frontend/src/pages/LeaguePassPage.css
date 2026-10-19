@@ -1,0 +1,214 @@
+
+.league-pass-page {
+  min-height: 100vh;
+  padding: 48px 24px;
+  background: #0b0b0b;
+  color: #f7f7f7;
+  box-sizing: border-box;
+}
+
+.pass-hero {
+  max-width: 680px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.pass-eyebrow,
+.plan-label {
+  color: #f0445e;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.pass-hero h1 {
+  margin: 12px 0;
+  font-size: clamp(32px, 5vw, 48px);
+}
+
+.pass-intro {
+  max-width: 520px;
+  margin: 0 auto;
+  color: #a1a1aa;
+  line-height: 1.7;
+}
+
+.billing-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 5px;
+  margin-top: 25px;
+  background: #191919;
+  border: 1px solid #303030;
+  border-radius: 10px;
+}
+
+.billing-switch button {
+  padding: 10px 18px;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.billing-switch button.selected {
+  background: #f0445e;
+  color: white;
+}
+
+.pass-plans {
+  max-width: 850px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+
+.pass-plan {
+  position: relative;
+  padding: 28px;
+  background: #141414;
+  border: 1px solid #303030;
+  border-radius: 16px;
+}
+
+.featured-plan {
+  border-color: #f0445e;
+  background: linear-gradient(160deg, #24151b, #141414 45%);
+}
+
+.plan-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 6px 9px;
+  background: #f0445e;
+  border-radius: 6px;
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.pass-plan .plan-label {
+  margin-bottom: 12px;
+}
+
+.pass-plan h2 {
+  margin: 0 0 10px;
+  font-size: 25px;
+}
+
+.plan-description {
+  min-height: 44px;
+  color: #a1a1aa;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.plan-price {
+  margin: 24px 0 6px;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.plan-price span {
+  color: #a1a1aa;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.plan-note {
+  color: #a1a1aa;
+  font-size: 11px;
+  min-height: 14px;
+}
+
+.plan-button {
+  width: 100%;
+  margin: 15px 0 22px;
+  padding: 13px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.plan-button.secondary {
+  border: 1px solid #454545;
+  background: transparent;
+  color: white;
+}
+
+.plan-button.primary {
+  border: 1px solid #f0445e;
+  background: #f0445e;
+  color: white;
+}
+
+.pass-plan ul {
+  display: grid;
+  gap: 15px;
+  padding: 20px 0 0;
+  margin: 0;
+  border-top: 1px solid #303030;
+  list-style: none;
+  color: #d4d4d8;
+  font-size: 13px;
+}
+
+.pass-benefits {
+  max-width: 950px;
+  margin: 60px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.pass-benefits > div {
+  padding: 20px;
+  border: 1px solid #252525;
+  border-radius: 12px;
+  background: #111;
+}
+
+.benefit-icon {
+  color: #f0445e;
+  font-size: 25px;
+}
+
+.pass-benefits h3 {
+  font-size: 15px;
+}
+
+.pass-benefits p,
+.pass-disclaimer {
+  color: #999;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.pass-disclaimer {
+  max-width: 800px;
+  margin: 40px auto 0;
+  text-align: center;
+}
+
+@media (max-width: 650px) {
+  .league-pass-page {
+    padding: 32px 16px;
+  }
+
+  .pass-plans,
+  .pass-benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .pass-plan {
+    padding: 22px;
+  }
+
+  .pass-benefits {
+    margin-top: 35px;
+  }
+}

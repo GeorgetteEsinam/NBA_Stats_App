@@ -979,3 +979,339 @@
 
   font-size: 16px;
 }
+
+/* ==========================================
+   FAVORITES - DYNAMIC CONTENT
+========================================== */
+
+.favorites-empty {
+  color: #7c879b;
+  font-size: 12px;
+  padding: 12px 0;
+  margin: 0;
+}
+
+.favorite-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.favorite-team,
+.favorite-player {
+  min-width: 0;
+}
+
+.favorite-team-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.favorite-player-photo {
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.profile-readonly-label {
+  color: #788398;
+  font-size: 10px;
+}
+
+.favorites-message {
+  border-radius: 8px;
+  padding: 11px 13px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.favorites-message.error {
+  background: #32131b;
+  border: 1px solid #4b1b26;
+  color: #ff8a9a;
+}
+
+.favorites-message.success {
+  background: #073c2e;
+  border: 1px solid #125541;
+  color: #53dfb0;
+}
+
+/* ==========================================
+   FAVORITE SELECTOR MODAL
+========================================== */
+
+.favorite-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(0, 0, 0, 0.76);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.favorite-modal {
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  background: #111827;
+  color: #f4f6fb;
+  border: 1px solid #29364b;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.favorite-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.favorite-modal-header h2 {
+  margin: 0 0 7px;
+  font-size: 19px;
+}
+
+.favorite-modal-header p {
+  color: #8490a5;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.favorite-modal-header .close-menu {
+  font-size: 28px;
+}
+
+.favorite-search {
+  width: 100%;
+  height: 42px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  background: #0b111b;
+  border: 1px solid #29364b;
+  border-radius: 9px;
+  padding: 0 13px;
+  outline: none;
+  color: white;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.favorite-search:focus {
+  border-color: #5793ff;
+}
+
+.favorite-search::placeholder {
+  color: #6f7b90;
+}
+
+.favorite-options {
+  min-height: 80px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.favorite-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 2px;
+  border-bottom: 1px solid #253044;
+}
+
+.favorite-option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.favorite-option-info strong {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.favorite-option-info small {
+  color: #7c879b;
+  font-size: 10px;
+}
+
+.favorite-select-button {
+  min-width: 68px;
+  border: none;
+  border-radius: 7px;
+  background: #f0445e;
+  color: white;
+  padding: 8px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.favorite-select-button:hover:not(:disabled) {
+  background: #d8324c;
+}
+
+.favorite-select-button:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.favorite-select-button.added {
+  background: #153c32;
+  color: #53dfb0;
+}
+
+.favorite-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #253044;
+  padding-top: 15px;
+  margin-top: 12px;
+}
+
+.favorite-modal-footer span {
+  color: #8490a5;
+  font-size: 10px;
+}
+
+.favorite-cancel-button {
+  background: transparent;
+  color: #e4e8f0;
+  border: 1px solid #344158;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.favorite-cancel-button:hover {
+  background: #1b273a;
+}
+
+.favorite-modal button:disabled {
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .favorite-list {
+    grid-template-columns: 1fr;
+  }
+
+  .favorite-modal {
+    padding: 16px;
+    max-height: 90vh;
+  }
+
+  .favorite-modal-header h2 {
+    font-size: 16px;
+  }
+}
+
+
+/* SUBSCRIPTION MANAGEMENT */
+.subscription-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.subscription-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.subscription-badge.pro {
+  background: rgba(240, 68, 94, 0.15);
+  color: #f0445e;
+}
+
+.subscription-badge.free {
+  background: #202938;
+  color: #cbd5e1;
+}
+
+.subscription-description {
+  margin: 0;
+  color: #aab4c4;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.subscription-expiry {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #0b1019;
+}
+
+.subscription-expiry span {
+  color: #aab4c4;
+  font-size: 13px;
+}
+
+.subscription-expiry strong {
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.cancel-subscription-button,
+.manage-subscription-button {
+  align-self: flex-start;
+  padding: 11px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.cancel-subscription-button {
+  border: 1px solid #f0445e;
+  background: transparent;
+  color: #f0445e;
+}
+
+.cancel-subscription-button:hover {
+  background: rgba(240, 68, 94, 0.1);
+}
+
+.cancel-subscription-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.manage-subscription-button {
+  border: none;
+  background: #f0445e;
+  color: #ffffff;
+}
+
+.manage-subscription-button:hover {
+  opacity: 0.85;
+}
+
+.subscription-cancelled {
+  margin: 0;
+  color: #aab4c4;
+  font-size: 13px;
+  line-height: 1.6;
+}

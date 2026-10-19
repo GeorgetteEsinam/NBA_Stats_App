@@ -1,7 +1,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "./PlayerDetails.css";
+import { getPlayer, getPlayerLastGames, getPlayerAverages } from "../services/api.js";
+import "./PlayerDetailsPage.css";
 
 function PlayerDetails() {
   const { playerId } = useParams();
@@ -12,19 +13,14 @@ function PlayerDetails() {
   const [error, setError] = useState("");
   const [lastGames, setLastGames] = useState([]);
   const [gamesLoading, setGamesLoading] = useState(true);
+  const [averages, setAverages] = useState(null);
+const [averagesLoading, setAveragesLoading] = useState(true);
 
   // =========================
   // FETCH PLAYER
   // =========================
   useEffect(() => {
-    fetch(`http://localhost:5000/api/players/${playerId}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch player");
-        }
-
-        return response.json();
-      })
+    getPlayer(playerId)
       .then((data) => {
         setPlayer(data);
         setLoading(false);
@@ -36,35 +32,85 @@ function PlayerDetails() {
       });
   }, [playerId]);
 
-  // =========================
-  // FETCH LAST 5 GAMES
-  // =========================
   useEffect(() => {
-    const fetchLastGames = async () => {
-      try {
-        setGamesLoading(true);
+  let cancelled = false;
 
-        const response = await fetch(
-          `http://localhost:5000/api/players/${playerId}/last-games`
-        );
+  const loadAverages = async () => {
+    setAveragesLoading(true);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch games");
-        }
+    try {
+      const data = await getPlayerAverages(playerId, 2024);
 
-        const data = await response.json();
+      if (!cancelled) {
+        setAverages(data);
+      }
+    } catch (err) {
+      console.error("Failed to load player averages:", err);
 
-        setLastGames(data);
-      } catch (error) {
-        console.error("Last games error:", error);
+      if (!cancelled) {
+        setAverages(null);
+      }
+    } finally {
+      if (!cancelled) {
+        setAveragesLoading(false);
+      }
+    }
+  };
+
+  loadAverages();
+
+  return () => {
+    cancelled = true;
+  };
+}, [playerId]);
+
+
+// =========================
+// FETCH LAST 5 GAMES
+// =========================
+useEffect(() => {
+  let cancelled = false;
+
+  const fetchLastGames = async () => {
+    setGamesLoading(true);
+
+    try {
+      const data = await getPlayerLastGames(playerId);
+
+      // Handle different response formats from the backend.
+      const games = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.games)
+          ? data.games
+          : Array.isArray(data?.response)
+            ? data.response
+            : Array.isArray(data?.data)
+              ? data.data
+              : [];
+
+      if (!cancelled) {
+        setLastGames(games.slice(0, 5));
+      }
+    } catch (error) {
+      console.error("Last games error:", error);
+
+      if (!cancelled) {
         setLastGames([]);
-      } finally {
+      }
+    } finally {
+      if (!cancelled) {
         setGamesLoading(false);
       }
-    };
+    }
+  };
 
-    fetchLastGames();
-  }, [playerId]);
+  fetchLastGames();
+
+  return () => {
+    cancelled = true;
+  };
+}, [playerId]);
+
 
   // =========================
   // LOADING
@@ -116,46 +162,7 @@ function PlayerDetails() {
           TOP NAV
       ========================= */}
 
-      <header className="player-details-navbar">
-
-        <div className="navbar-left">
-
-          <div className="nba-logo">
-            NBA
-          </div>
-
-          <div className="nba-brand">
-            NBA Stats
-          </div>
-
-          <nav className="details-nav">
-
-            <span onClick={() => navigate("/")}>
-              Home
-            </span>
-
-            <span onClick={() => navigate("/teams")}>
-              Teams
-            </span>
-
-            <span className="active">
-              Players
-            </span>
-
-          </nav>
-
-        </div>
-
-        <div className="navbar-right">
-
-          <div className="details-menu">
-            ☰
-          </div>
-
-        </div>
-
-      </header>
-
+      
       {/* =========================
           PAGE CONTENT
       ========================= */}
@@ -294,28 +301,20 @@ function PlayerDetails() {
                 </div>
 
                 <div className="season-row">
-
-                  <span>
-                    2023–24
-                  </span>
-
-                  <span>
-                    --
-                  </span>
-
-                  <span>
-                    --
-                  </span>
-
-                  <span>
-                    --
-                  </span>
-
-                  <span>
-                    --
-                  </span>
-
-                </div>
+  <span>2024–25</span>
+  <span>
+    {averagesLoading ? "..." : averages?.gp ?? "--"}
+  </span>
+  <span>
+    {averagesLoading ? "..." : averages?.ppg ?? "--"}
+  </span>
+  <span>
+    {averagesLoading ? "..." : averages?.rpg ?? "--"}
+  </span>
+  <span>
+    {averagesLoading ? "..." : averages?.apg ?? "--"}
+  </span>
+</div>
 
               </div>
 
