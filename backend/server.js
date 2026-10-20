@@ -12,17 +12,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-
 const PORT = 5000;
 const API_KEY = process.env.API_SPORTS_KEY;
 
 const { randomUUID } = require("crypto");
 
-const EXPRESSPAY_MERCHANT_ID =
-  process.env.EXPRESSPAY_MERCHANT_ID;
+const EXPRESSPAY_MERCHANT_ID = process.env.EXPRESSPAY_MERCHANT_ID;
 
-const EXPRESSPAY_API_KEY =
-  process.env.EXPRESSPAY_API_KEY;
+const EXPRESSPAY_API_KEY = process.env.EXPRESSPAY_API_KEY;
 
 const EXPRESSPAY_BASE_URL =
   process.env.EXPRESSPAY_ENV === "live"
@@ -33,17 +30,16 @@ const PRO_PLANS = {
   monthly: {
     amount: 110,
     durationMonths: 1,
-    description: "NBA Stats Pro - 1 month"
+    description: "NBA Stats Pro - 1 month",
   },
   yearly: {
     amount: 1100,
     durationMonths: 12,
-    description: "NBA Stats Pro - 1 year"
-  }
+    description: "NBA Stats Pro - 1 year",
+  },
 };
 
 const PRO_CURRENCY = "GHS";
-
 
 // ==========================================
 // HELPER FUNCTIONS
@@ -68,7 +64,7 @@ function getPublicApiUrl() {
 
   if (!url || !url.startsWith("https://")) {
     throw new Error(
-      "PUBLIC_API_URL must be configured with a public HTTPS URL"
+      "PUBLIC_API_URL must be configured with a public HTTPS URL",
     );
   }
 
@@ -76,20 +72,17 @@ function getPublicApiUrl() {
 }
 
 async function queryExpressPay(token) {
-  const response = await fetch(
-    `${EXPRESSPAY_BASE_URL}/query.php`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: new URLSearchParams({
-        "merchant-id": EXPRESSPAY_MERCHANT_ID,
-        "api-key": EXPRESSPAY_API_KEY,
-        token
-      })
-    }
-  );
+  const response = await fetch(`${EXPRESSPAY_BASE_URL}/query.php`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      "merchant-id": EXPRESSPAY_MERCHANT_ID,
+      "api-key": EXPRESSPAY_API_KEY,
+      token,
+    }),
+  });
 
   if (!response.ok) {
     throw new Error("ExpressPay Query API request failed");
@@ -104,7 +97,7 @@ async function queryExpressPay(token) {
 async function verifyAndUpdatePayment(orderId, token) {
   const [payments] = await db.execute(
     "SELECT * FROM payments WHERE order_id = ?",
-    [orderId]
+    [orderId],
   );
 
   if (!payments.length) {
@@ -113,10 +106,7 @@ async function verifyAndUpdatePayment(orderId, token) {
 
   const payment = payments[0];
 
-  if (
-    !payment.expresspay_token ||
-    payment.expresspay_token !== token
-  ) {
+  if (!payment.expresspay_token || payment.expresspay_token !== token) {
     return { found: true, verified: false };
   }
 
@@ -130,12 +120,16 @@ async function verifyAndUpdatePayment(orderId, token) {
     return {
       found: true,
       verified: true,
-      status: payment.status
+      status: payment.status,
     };
   }
 
-  const result = await queryExpressPay(token);
+  const selectedPlan = PRO_PLANS[payment.billing_period];
+  if (!selectedPlan) {
+    throw new Error("Payment has an unsupported billing period");
+  }
 
+  const result = await queryExpressPay(token);
   const sameOrder = String(result["order-id"]) === String(orderId);
   const sameToken = String(result.token) === String(token);
   const sameAmount = Number(result.amount) === Number(payment.amount);
@@ -148,9 +142,7 @@ async function verifyAndUpdatePayment(orderId, token) {
   }
 
   const transactionId =
-    result["transaction-id"] ||
-    result.transaction_id ||
-    null;
+    result["transaction-id"] || result.transaction_id || null;
 
   if (Number(result.result) === 1) {
     const connection = await db.getConnection();
@@ -160,7 +152,7 @@ async function verifyAndUpdatePayment(orderId, token) {
 
       const [currentRows] = await connection.execute(
         "SELECT * FROM payments WHERE order_id = ? FOR UPDATE",
-        [orderId]
+        [orderId],
       );
 
       if (!currentRows.length) {
@@ -180,9 +172,8 @@ async function verifyAndUpdatePayment(orderId, token) {
       }
 
       if (current.status === "pending") {
-       
-await connection.execute(
-  `UPDATE users
+        await connection.execute(
+          `UPDATE users
    SET account_type = 'pro',
        pro_cancelled_at = NULL,
        pro_expires_at = DATE_ADD(
@@ -193,30 +184,16 @@ await connection.execute(
          INTERVAL ? MONTH
        )
    WHERE id = ?`,
-  [plan.durationMonths, current.user_id]
-);
-
+          [selectedPlan.durationMonths, current.user_id],
+        );
 
         await connection.execute(
           `UPDATE payments
            SET status = 'approved', transaction_id = ?
            WHERE order_id = ? AND status = 'pending'`,
-          [transactionId, orderId]
+          [transactionId, orderId],
         );
 
-        await connection.execute(
-          `UPDATE users
-           SET account_type = 'pro',
-               pro_expires_at = DATE_ADD(
-                 GREATEST(
-                   COALESCE(pro_expires_at, UTC_TIMESTAMP()),
-                   UTC_TIMESTAMP()
-                 ),
-                 INTERVAL ? MONTH
-               )
-           WHERE id = ?`,
-          [plan.durationMonths, current.user_id]
-        );
       }
 
       await connection.commit();
@@ -235,7 +212,7 @@ await connection.execute(
       `UPDATE payments
        SET status = 'declined'
        WHERE order_id = ? AND status = 'pending'`,
-      [orderId]
+      [orderId],
     );
 
     return { found: true, verified: true, status: "declined" };
@@ -249,12 +226,11 @@ await connection.execute(
     `UPDATE payments
      SET status = 'error'
      WHERE order_id = ? AND status = 'pending'`,
-    [orderId]
+    [orderId],
   );
 
   return { found: true, verified: true, status: "error" };
 }
-
 
 // Start a monthly Pro payment.
 
@@ -265,16 +241,15 @@ app.post(
     try {
       if (!EXPRESSPAY_MERCHANT_ID || !EXPRESSPAY_API_KEY) {
         return res.status(500).json({
-          message: "ExpressPay credentials are not configured"
+          message: "ExpressPay credentials are not configured",
         });
       }
 
       const { billingPeriod } = req.body;
       const selectedPlan = PRO_PLANS[billingPeriod];
-
       if (!selectedPlan) {
         return res.status(400).json({
-          message: "Please select a valid subscription plan"
+          message: "Please select a valid subscription plan",
         });
       }
 
@@ -282,12 +257,12 @@ app.post(
         `SELECT id, name, email, account_type, pro_expires_at
          FROM users
          WHERE id = ?`,
-        [req.user.userId]
+        [req.user.userId],
       );
 
       if (!users.length) {
         return res.status(404).json({
-          message: "User not found"
+          message: "User not found",
         });
       }
 
@@ -300,7 +275,7 @@ app.post(
       ) {
         return res.status(409).json({
           message: "You already have active Pro access",
-          proExpiresAt: user.pro_expires_at
+          proExpiresAt: user.pro_expires_at,
         });
       }
 
@@ -315,82 +290,70 @@ app.post(
         `INSERT INTO payments
          (user_id, order_id, amount, currency, billing_period, status)
          VALUES (?, ?, ?, ?, ?, 'pending')`,
-        [
-          user.id,
-          orderId,
-          selectedPlan.amount,
-          PRO_CURRENCY,
-          billingPeriod
-        ]
+        [user.id, orderId, selectedPlan.amount, PRO_CURRENCY, billingPeriod],
       );
 
-      const response = await fetch(
-        `${EXPRESSPAY_BASE_URL}/submit.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: new URLSearchParams({
-            "merchant-id": EXPRESSPAY_MERCHANT_ID,
-            "api-key": EXPRESSPAY_API_KEY,
-            firstname,
-            lastname,
-            email: user.email,
-            currency: PRO_CURRENCY,
-            amount: String(selectedPlan.amount),
-            "order-id": orderId,
-            "order-desc": selectedPlan.description,
-            "redirect-url": `${publicUrl}/api/payments/expresspay/return`,
-            "post-url": `${publicUrl}/api/payments/expresspay/callback`
-          })
-        }
-      );
+      const response = await fetch(`${EXPRESSPAY_BASE_URL}/submit.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          "merchant-id": EXPRESSPAY_MERCHANT_ID,
+          "api-key": EXPRESSPAY_API_KEY,
+          firstname,
+          lastname,
+          email: user.email,
+          currency: PRO_CURRENCY,
+          amount: String(selectedPlan.amount),
+          "order-id": orderId,
+          "order-desc": selectedPlan.description,
+          "redirect-url": `${publicUrl}/api/payments/expresspay/return`,
+          "post-url": `${publicUrl}/api/payments/expresspay/callback`,
+        }),
+      });
 
       const result = await response.json();
 
-      
-if (
-  !response.ok ||
-  Number(result.status) !== 1 ||
-  !result.token ||
-  String(result["order-id"]) !== orderId
-) {
-  await db.execute(
-    `UPDATE payments
+      if (
+        !response.ok ||
+        Number(result.status) !== 1 ||
+        !result.token ||
+        String(result["order-id"]) !== orderId
+      ) {
+        await db.execute(
+          `UPDATE payments
      SET status = 'error'
      WHERE order_id = ? AND status = 'pending'`,
-    [orderId]
-  );
+          [orderId],
+        );
 
-  return res.status(502).json({
-    message: "ExpressPay could not start the checkout"
-  });
-}
-
+        return res.status(502).json({
+          message: "ExpressPay could not start the checkout",
+        });
+      }
 
       await db.execute(
         `UPDATE payments
          SET expresspay_token = ?
          WHERE order_id = ? AND status = 'pending'`,
-        [result.token, orderId]
+        [result.token, orderId],
       );
 
-     res.json({
-  orderId,
-  checkoutUrl: `${EXPRESSPAY_BASE_URL}/checkout.php?token=${encodeURIComponent(result.token)}`,
-  checkoutToken: result.token
-});
+      res.json({
+        orderId,
+        checkoutUrl: `${EXPRESSPAY_BASE_URL}/checkout.php?token=${encodeURIComponent(result.token)}`,
+        checkoutToken: result.token,
+      });
     } catch (error) {
       console.error("ExpressPay create error:", error.message);
 
       res.status(500).json({
-        message: "Unable to start payment"
+        message: "Unable to start payment",
       });
     }
-  }
+  },
 );
-
 
 // Check the payment status for the logged-in user.
 app.get(
@@ -403,25 +366,22 @@ app.get(
                 currency, created_at
          FROM payments
          WHERE order_id = ? AND user_id = ?`,
-        [req.params.orderId, req.user.userId]
+        [req.params.orderId, req.user.userId],
       );
 
       if (!payments.length) {
         return res.status(404).json({
-          message: "Payment not found"
+          message: "Payment not found",
         });
       }
 
       const payment = payments[0];
 
       // Re-query ExpressPay for any payment that isn't final.
-      if (
-        payment.status === "pending" &&
-        payment.expresspay_token
-      ) {
+      if (payment.status === "pending" && payment.expresspay_token) {
         await verifyAndUpdatePayment(
           payment.order_id,
-          payment.expresspay_token
+          payment.expresspay_token,
         );
       }
 
@@ -429,97 +389,79 @@ app.get(
         `SELECT order_id, status, amount, currency, created_at
          FROM payments
          WHERE order_id = ? AND user_id = ?`,
-        [req.params.orderId, req.user.userId]
+        [req.params.orderId, req.user.userId],
       );
 
       const [users] = await db.execute(
         `SELECT account_type, pro_expires_at
          FROM users WHERE id = ?`,
-        [req.user.userId]
+        [req.user.userId],
       );
 
       res.json({
         payment: updated[0],
-        pro: users[0]
+        pro: users[0],
       });
-
     } catch (error) {
       console.error("Payment status error:", error.message);
 
       res.status(500).json({
-        message: "Unable to check payment status"
+        message: "Unable to check payment status",
       });
     }
-  }
+  },
 );
 
 // Browser redirect after checkout. This does NOT grant Pro by itself.
-app.get(
-  "/api/payments/expresspay/return",
-  async (req, res) => {
-    try {
-      const orderId = req.query["order-id"];
-      const token = req.query.token;
+app.get("/api/payments/expresspay/return", async (req, res) => {
+  try {
+    const orderId = req.query["order-id"];
+    const token = req.query.token;
 
-      if (typeof orderId !== "string" ||
-          typeof token !== "string") {
-        return res.status(400).send("Missing payment reference");
-      }
-
-      await verifyAndUpdatePayment(orderId, token);
-
-      // Replace this with your actual frontend result page URL.
-      const frontendUrl = process.env.FRONTEND_URL;
-
-      if (!frontendUrl) {
-        return res.status(500).send(
-          "FRONTEND_URL is not configured"
-        );
-      }
-
-      res.redirect(
-        `${frontendUrl.replace(/\/+$/, "")}/payment-result?orderId=${encodeURIComponent(orderId)}`
-      );
-
-    } catch (error) {
-      console.error("ExpressPay return error:", error.message);
-      res.status(500).send("Unable to verify payment");
+    if (typeof orderId !== "string" || typeof token !== "string") {
+      return res.status(400).send("Missing payment reference");
     }
+
+    await verifyAndUpdatePayment(orderId, token);
+
+    // Replace this with your actual frontend result page URL.
+    const frontendUrl = process.env.FRONTEND_URL;
+
+    if (!frontendUrl) {
+      return res.status(500).send("FRONTEND_URL is not configured");
+    }
+
+    res.redirect(
+      `${frontendUrl.replace(/\/+$/, "")}/payment-result?orderId=${encodeURIComponent(orderId)}`,
+    );
+  } catch (error) {
+    console.error("ExpressPay return error:", error.message);
+    res.status(500).send("Unable to verify payment");
   }
-);
+});
 
 // Mobile-money callback. Always query ExpressPay again.
-app.post(
-  "/api/payments/expresspay/callback",
-  async (req, res) => {
-    // Acknowledge promptly as required by the documentation.
-    res.sendStatus(200);
+app.post("/api/payments/expresspay/callback", async (req, res) => {
+  // Acknowledge promptly as required by the documentation.
+  res.sendStatus(200);
 
-    const orderId = req.body["order-id"];
-    const token = req.body.token;
+  const orderId = req.body["order-id"];
+  const token = req.body.token;
 
-    if (typeof orderId !== "string" ||
-        typeof token !== "string") {
-      return;
-    }
-
-    try {
-      await verifyAndUpdatePayment(orderId, token);
-    } catch (error) {
-      console.error(
-        "ExpressPay callback verification error:",
-        error.message
-      );
-    }
+  if (typeof orderId !== "string" || typeof token !== "string") {
+    return;
   }
-);
 
+  try {
+    await verifyAndUpdatePayment(orderId, token);
+  } catch (error) {
+    console.error("ExpressPay callback verification error:", error.message);
+  }
+});
 
 // ==========================================
 // MIDDLEWARE
 // ==========================================
-
-
 
 // ==========================================
 // AUTHENTICATION MIDDLEWARE
@@ -530,7 +472,7 @@ function authenticateToken(req, res, next) {
 
   if (!authHeader) {
     return res.status(401).json({
-      message: "Authentication required"
+      message: "Authentication required",
     });
   }
 
@@ -538,23 +480,19 @@ function authenticateToken(req, res, next) {
 
   if (!token) {
     return res.status(401).json({
-      message: "Authentication required"
+      message: "Authentication required",
     });
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = decoded;
 
     next();
-
   } catch (error) {
     return res.status(403).json({
-      message: "Invalid or expired token"
+      message: "Invalid or expired token",
     });
   }
 }
@@ -578,24 +516,23 @@ app.get("/api/auth/me", authenticateToken, async (req, res) => {
       FROM users
       WHERE id = ?
       `,
-      [req.user.userId]
+      [req.user.userId],
     );
 
     if (users.length === 0) {
       return res.status(404).json({
-        message: "User not found"
+        message: "User not found",
       });
     }
 
     res.json({
-      user: users[0]
+      user: users[0],
     });
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      message: "Failed to fetch user"
+      message: "Failed to fetch user",
     });
   }
 });
@@ -604,15 +541,12 @@ app.get("/api/auth/me", authenticateToken, async (req, res) => {
    CANCEL PRO SUBSCRIPTION
 ========================================== */
 
-app.post(
-  "/api/subscription/cancel",
-  authenticateToken,
-  async (req, res) => {
-    try {
-      const userId = req.user.userId;
+app.post("/api/subscription/cancel", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
 
-      const [users] = await db.execute(
-        `SELECT
+    const [users] = await db.execute(
+      `SELECT
            id,
            account_type,
            pro_expires_at,
@@ -620,68 +554,62 @@ app.post(
            (pro_expires_at > UTC_TIMESTAMP()) AS has_active_pro
          FROM users
          WHERE id = ?`,
-        [userId]
-      );
+      [userId],
+    );
 
-      if (users.length === 0) {
-        return res.status(404).json({
-          message: "User not found"
-        });
-      }
+    if (users.length === 0) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
 
-      const user = users[0];
+    const user = users[0];
 
-      if (
-        user.account_type !== "pro" ||
-        !user.has_active_pro
-      ) {
-        return res.status(400).json({
-          message: "You do not have an active Pro subscription to cancel."
-        });
-      }
+    if (user.account_type !== "pro" || !user.has_active_pro) {
+      return res.status(400).json({
+        message: "You do not have an active Pro subscription to cancel.",
+      });
+    }
 
-      // Do not record the cancellation twice.
-      if (user.pro_cancelled_at) {
-        return res.json({
-          message: "Your cancellation has already been recorded.",
-          cancelled: true,
-          proExpiresAt: user.pro_expires_at,
-          cancelledAt: user.pro_cancelled_at
-        });
-      }
+    // Do not record the cancellation twice.
+    if (user.pro_cancelled_at) {
+      return res.json({
+        message: "Your cancellation has already been recorded.",
+        cancelled: true,
+        proExpiresAt: user.pro_expires_at,
+        cancelledAt: user.pro_cancelled_at,
+      });
+    }
 
-      await db.execute(
-        `UPDATE users
+    await db.execute(
+      `UPDATE users
          SET pro_cancelled_at = UTC_TIMESTAMP()
          WHERE id = ?
            AND pro_cancelled_at IS NULL`,
-        [userId]
-      );
+      [userId],
+    );
 
-      const [updatedUsers] = await db.execute(
-        `SELECT pro_expires_at, pro_cancelled_at
+    const [updatedUsers] = await db.execute(
+      `SELECT pro_expires_at, pro_cancelled_at
          FROM users
          WHERE id = ?`,
-        [userId]
-      );
+      [userId],
+    );
 
-      res.json({
-        message: "Your cancellation request has been recorded.",
-        cancelled: true,
-        proExpiresAt: updatedUsers[0].pro_expires_at,
-        cancelledAt: updatedUsers[0].pro_cancelled_at
-      });
+    res.json({
+      message: "Your cancellation request has been recorded.",
+      cancelled: true,
+      proExpiresAt: updatedUsers[0].pro_expires_at,
+      cancelledAt: updatedUsers[0].pro_cancelled_at,
+    });
+  } catch (error) {
+    console.error("Cancel subscription error:", error);
 
-    } catch (error) {
-      console.error("Cancel subscription error:", error);
-
-      res.status(500).json({
-        message: "Unable to record your cancellation. Please try again."
-      });
-    }
+    res.status(500).json({
+      message: "Unable to record your cancellation. Please try again.",
+    });
   }
-);
-
+});
 
 // ==========================================
 // BASIC TEST ROUTES
@@ -689,13 +617,13 @@ app.post(
 
 app.get("/", (req, res) => {
   res.json({
-    message: "NBA Stats API is running!"
+    message: "NBA Stats API is running!",
   });
 });
 
 app.get("/api/test", (req, res) => {
   res.json({
-    message: "Hello from the NBA backend!"
+    message: "Hello from the NBA backend!",
   });
 });
 
@@ -739,13 +667,12 @@ app.get("/api/players", async (req, res) => {
     `);
 
     res.json(players);
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch players",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -796,23 +723,22 @@ app.get("/api/players/:id", async (req, res) => {
 
       WHERE p.id = ?
       `,
-      [id]
+      [id],
     );
 
     if (players.length === 0) {
       return res.status(404).json({
-        message: "Player not found"
+        message: "Player not found",
       });
     }
 
     res.json(players[0]);
-
   } catch (error) {
     console.error("Player details error:", error);
 
     res.status(500).json({
       message: "Failed to fetch player",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -830,7 +756,7 @@ app.get("/api/players/:id/averages", async (req, res) => {
       `SELECT api_player_id, first_name, last_name
        FROM players
        WHERE id = ?`,
-      [id]
+      [id],
     );
 
     if (!players.length) {
@@ -847,22 +773,19 @@ app.get("/api/players/:id/averages", async (req, res) => {
         headers: {
           "x-apisports-key": API_KEY,
         },
-      }
+      },
     );
 
     const data = await response.json();
 
-    if (!response.ok || (data.errors &&
-        Object.keys(data.errors).length > 0)) {
+    if (!response.ok || (data.errors && Object.keys(data.errors).length > 0)) {
       return res.status(502).json({
         message: "Could not fetch player statistics",
         details: data.errors,
       });
     }
 
-    const games = Array.isArray(data.response)
-      ? data.response
-      : [];
+    const games = Array.isArray(data.response) ? data.response : [];
 
     const playedGames = games.filter((game) => {
       const minutes = Number.parseFloat(game.min);
@@ -870,10 +793,7 @@ app.get("/api/players/:id/averages", async (req, res) => {
     });
 
     const total = (field) =>
-      playedGames.reduce(
-        (sum, game) => sum + (Number(game[field]) || 0),
-        0
-      );
+      playedGames.reduce((sum, game) => sum + (Number(game[field]) || 0), 0);
 
     const gp = playedGames.length;
 
@@ -919,13 +839,12 @@ app.get("/api/teams", async (req, res) => {
     `);
 
     res.json(teams);
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch teams",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -953,23 +872,22 @@ app.get("/api/teams/:id", async (req, res) => {
       FROM teams
       WHERE id = ?
       `,
-      [req.params.id]
+      [req.params.id],
     );
 
     if (teams.length === 0) {
       return res.status(404).json({
-        message: "Team not found"
+        message: "Team not found",
       });
     }
 
     res.json(teams[0]);
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch team",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1004,17 +922,16 @@ app.get("/api/teams/:id/players", async (req, res) => {
       WHERE team_id = ?
       ORDER BY last_name, first_name
       `,
-      [req.params.id]
+      [req.params.id],
     );
 
     res.json(players);
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch team players",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1025,25 +942,21 @@ app.get("/api/teams/:id/players", async (req, res) => {
 
 app.get("/api/nba-test", async (req, res) => {
   try {
-    const response = await fetch(
-      "https://v2.nba.api-sports.io/teams",
-      {
-        headers: {
-          "x-apisports-key": API_KEY
-        }
-      }
-    );
+    const response = await fetch("https://v2.nba.api-sports.io/teams", {
+      headers: {
+        "x-apisports-key": API_KEY,
+      },
+    });
 
     const data = await response.json();
 
     res.json(data);
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch NBA data",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1054,20 +967,15 @@ app.get("/api/nba-test", async (req, res) => {
 
 app.get("/api/import-teams", async (req, res) => {
   try {
-    const response = await fetch(
-      "https://v2.nba.api-sports.io/teams",
-      {
-        headers: {
-          "x-apisports-key": API_KEY
-        }
-      }
-    );
+    const response = await fetch("https://v2.nba.api-sports.io/teams", {
+      headers: {
+        "x-apisports-key": API_KEY,
+      },
+    });
 
     const data = await response.json();
 
-    const nbaTeams = data.response.filter(
-      (team) => team.nbaFranchise === true
-    );
+    const nbaTeams = data.response.filter((team) => team.nbaFranchise === true);
 
     for (const team of nbaTeams) {
       await db.execute(
@@ -1097,22 +1005,21 @@ app.get("/api/import-teams", async (req, res) => {
           team.allStar,
           team.nbaFranchise,
           team.leagues?.standard?.conference || null,
-          team.leagues?.standard?.division || null
-        ]
+          team.leagues?.standard?.division || null,
+        ],
       );
     }
 
     res.json({
       message: "NBA teams imported successfully!",
-      count: nbaTeams.length
+      count: nbaTeams.length,
     });
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to import NBA teams",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1127,21 +1034,20 @@ app.get("/api/nba-players-test", async (req, res) => {
       "https://v2.nba.api-sports.io/players?team=1&season=2024",
       {
         headers: {
-          "x-apisports-key": API_KEY
-        }
-      }
+          "x-apisports-key": API_KEY,
+        },
+      },
     );
 
     const data = await response.json();
 
     res.json(data);
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch NBA players",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1152,7 +1058,6 @@ app.get("/api/nba-players-test", async (req, res) => {
 
 app.get("/api/import-players", async (req, res) => {
   try {
-
     const [teams] = await db.execute(`
       SELECT
         t.id,
@@ -1169,35 +1074,24 @@ app.get("/api/import-players", async (req, res) => {
     let totalPlayers = 0;
     let teamsProcessed = 0;
 
-    console.log(
-      `Teams remaining to import: ${teams.length}`
-    );
+    console.log(`Teams remaining to import: ${teams.length}`);
 
     for (const team of teams) {
-
-      console.log(
-        `Importing players for ${team.name}...`
-      );
+      console.log(`Importing players for ${team.name}...`);
 
       const response = await fetch(
         `https://v2.nba.api-sports.io/players?team=${team.api_team_id}&season=2024`,
         {
           headers: {
-            "x-apisports-key": API_KEY
-          }
-        }
+            "x-apisports-key": API_KEY,
+          },
+        },
       );
 
       const data = await response.json();
 
-      if (
-        data.errors &&
-        Object.keys(data.errors).length > 0
-      ) {
-        console.log(
-          `Could not import ${team.name}:`,
-          data.errors
-        );
+      if (data.errors && Object.keys(data.errors).length > 0) {
+        console.log(`Could not import ${team.name}:`, data.errors);
 
         await wait(7000);
 
@@ -1205,11 +1099,8 @@ app.get("/api/import-players", async (req, res) => {
       }
 
       for (const player of data.response) {
-
         const standard =
-          player.leagues?.standard ||
-          player.leagues?.Standard ||
-          {};
+          player.leagues?.standard || player.leagues?.Standard || {};
 
         await db.execute(
           `
@@ -1266,8 +1157,8 @@ app.get("/api/import-players", async (req, res) => {
             toNumberOrNull(player.weight?.kilograms),
             player.college || null,
             toNumberOrNull(player.nba?.start),
-            toNumberOrNull(player.nba?.pro)
-          ]
+            toNumberOrNull(player.nba?.pro),
+          ],
         );
 
         totalPlayers++;
@@ -1275,9 +1166,7 @@ app.get("/api/import-players", async (req, res) => {
 
       teamsProcessed++;
 
-      console.log(
-        `${team.name} imported successfully.`
-      );
+      console.log(`${team.name} imported successfully.`);
 
       await wait(7000);
     }
@@ -1285,15 +1174,14 @@ app.get("/api/import-players", async (req, res) => {
     res.json({
       message: "Players imported successfully!",
       teamsProcessed: teamsProcessed,
-      playersProcessed: totalPlayers
+      playersProcessed: totalPlayers,
     });
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to import players",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1308,18 +1196,18 @@ app.post("/api/auth/Signup", async (req, res) => {
 
     if (!name || !email || !password) {
       return res.status(400).json({
-        message: "Name, email and password are required"
+        message: "Name, email and password are required",
       });
     }
 
     const [existingUsers] = await db.execute(
       "SELECT id FROM users WHERE email = ?",
-      [email]
+      [email],
     );
 
     if (existingUsers.length > 0) {
       return res.status(409).json({
-        message: "An account with this email already exists"
+        message: "An account with this email already exists",
       });
     }
 
@@ -1331,20 +1219,19 @@ app.post("/api/auth/Signup", async (req, res) => {
       (name, email, password_hash)
       VALUES (?, ?, ?)
       `,
-      [name, email, passwordHash]
+      [name, email, passwordHash],
     );
 
     res.status(201).json({
       message: "Account created successfully",
-      userId: result.insertId
+      userId: result.insertId,
     });
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to create account",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1359,43 +1246,39 @@ app.post("/api/auth/Login", async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        message: "Email and password are required"
+        message: "Email and password are required",
       });
     }
 
-    const [users] = await db.execute(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    );
+    const [users] = await db.execute("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
 
     if (users.length === 0) {
       return res.status(401).json({
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
     const user = users[0];
 
-    const passwordMatch = await bcrypt.compare(
-      password,
-      user.password_hash
-    );
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
 
     if (!passwordMatch) {
       return res.status(401).json({
-        message: "Invalid email or password"
+        message: "Invalid email or password",
       });
     }
 
     const token = jwt.sign(
       {
         userId: user.id,
-        accountType: user.account_type
+        accountType: user.account_type,
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "2h"
-      }
+        expiresIn: "2h",
+      },
     );
 
     res.json({
@@ -1405,16 +1288,15 @@ app.post("/api/auth/Login", async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        account_type: user.account_type
-      }
+        account_type: user.account_type,
+      },
     });
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to login",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1426,17 +1308,16 @@ app.post("/api/auth/Login", async (req, res) => {
 app.get("/api/test-users", async (req, res) => {
   try {
     const [users] = await db.execute(
-      "SELECT id, name, email, account_type, created_at FROM users"
+      "SELECT id, name, email, account_type, created_at FROM users",
     );
 
     res.json(users);
-
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch users",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1447,33 +1328,28 @@ app.get("/api/test-users", async (req, res) => {
 
 app.get("/api/schedule-test", async (req, res) => {
   try {
-
     const date = req.query.date || "2026-10-01";
 
-    const url =
-      `https://nba-api-free-data.p.rapidapi.com/nba-schedule-by-date?date=${date}`;
+    const url = `https://nba-api-free-data.p.rapidapi.com/nba-schedule-by-date?date=${date}`;
 
     const response = await fetch(url, {
       method: "GET",
 
       headers: {
         "x-rapidapi-key": process.env.RAPIDAPI_KEY,
-        "x-rapidapi-host":
-          "nba-api-free-data.p.rapidapi.com"
-      }
+        "x-rapidapi-host": "nba-api-free-data.p.rapidapi.com",
+      },
     });
 
     const data = await response.json();
 
     res.json(data);
-
   } catch (error) {
-
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch NBA schedule",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1484,29 +1360,26 @@ app.get("/api/schedule-test", async (req, res) => {
 
 app.get("/api/nba-schedule-test", async (req, res) => {
   try {
-
     const date = req.query.date || "2026-10-05";
 
     const response = await fetch(
       `https://v2.nba.api-sports.io/games?date=${date}`,
       {
         headers: {
-          "x-apisports-key": API_KEY
-        }
-      }
+          "x-apisports-key": API_KEY,
+        },
+      },
     );
 
     const data = await response.json();
 
     res.json(data);
-
   } catch (error) {
-
     console.error(error);
 
     res.status(500).json({
       message: "Failed to fetch NBA schedule",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -1521,7 +1394,7 @@ app.post("/api/test-post", (req, res) => {
 
   res.json({
     message: "POST is working!",
-    received: req.body
+    received: req.body,
   });
 });
 
@@ -1542,125 +1415,100 @@ app.get("/api/players/:id/last-games", async (req, res) => {
       FROM players
       WHERE id = ?
       `,
-      [id]
+      [id],
     );
 
     if (players.length === 0) {
       return res.status(404).json({
-        message: "Player not found"
+        message: "Player not found",
       });
     }
 
-    const playerName =
-      `${players[0].first_name} ${players[0].last_name}`;
+    const playerName = `${players[0].first_name} ${players[0].last_name}`;
 
     console.log("Looking up player:", playerName);
 
     // FIND PLAYER IN BIG BALLS
     const playerResponse = await fetch(
       `https://api.bigballsdata.com/v1/players?sport=basketball&league=nba&name=${encodeURIComponent(
-        playerName
+        playerName,
       )}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.BBS_API_KEY}`
-        }
-      }
+          Authorization: `Bearer ${process.env.BBS_API_KEY}`,
+        },
+      },
     );
 
     const playerData = await playerResponse.json();
 
-    console.log(
-      "Big Balls player response:",
-      playerData
-    );
+    console.log("Big Balls player response:", playerData);
 
     if (!playerResponse.ok) {
       return res.status(500).json({
         message: "Big Balls player lookup failed",
-        error: playerData
+        error: playerData,
       });
     }
 
-    if (
-      !playerData.data ||
-      playerData.data.length === 0
-    ) {
+    if (!playerData.data || playerData.data.length === 0) {
       return res.status(404).json({
-        message: `Player "${playerName}" was not found in Big Balls`
+        message: `Player "${playerName}" was not found in Big Balls`,
       });
     }
 
-    const bbsPlayerId =
-      playerData.data[0].id;
+    const bbsPlayerId = playerData.data[0].id;
 
-    console.log(
-      "Big Balls player ID:",
-      bbsPlayerId
-    );
+    console.log("Big Balls player ID:", bbsPlayerId);
 
     // GET PLAYER GAME LOG
     const gamesResponse = await fetch(
       `https://api.bigballsdata.com/v1/players/${bbsPlayerId}/gamelog?sport=basketball&season=2025`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.BBS_API_KEY}`
-        }
-      }
+          Authorization: `Bearer ${process.env.BBS_API_KEY}`,
+        },
+      },
     );
 
-    const gamesData =
-      await gamesResponse.json();
-      console.log("Game log status:", gamesResponse.status);
-console.log("Game log response:", JSON.stringify(gamesData, null, 2));
+    const gamesData = await gamesResponse.json();
+    console.log("Game log status:", gamesResponse.status);
+    console.log("Game log response:", JSON.stringify(gamesData, null, 2));
 
-    console.log(
-      "Big Balls games response:",
-      gamesData
-    );
+    console.log("Big Balls games response:", gamesData);
 
     if (!gamesResponse.ok) {
       return res.status(500).json({
         message: "Failed to fetch player game log",
-        error: gamesData
+        error: gamesData,
       });
     }
 
-    if (
-      !gamesData.data ||
-      gamesData.data.length === 0
-    ) {
+    if (!gamesData.data || gamesData.data.length === 0) {
       return res.status(404).json({
-        message: "No game data found for this player"
+        message: "No game data found for this player",
       });
     }
 
-    const lastFiveGames =
-      gamesData.data.slice(0, 5);
+    const lastFiveGames = gamesData.data.slice(0, 5);
 
     res.json(lastFiveGames);
-
   } catch (error) {
-
-    console.error(
-      "Last games error:",
-      error
-    );
+    console.error("Last games error:", error);
 
     res.status(500).json({
       message: "Failed to fetch last 5 games",
-      error: error.message
+      error: error.message,
     });
   }
 });
 
- // ==========================================
- // NBA CONFERENCE STANDINGS
- // ==========================================
+// ==========================================
+// NBA CONFERENCE STANDINGS
+// ==========================================
 
 app.get("/api/standings", async (req, res) => {
   try {
-    
     const season = req.query.season || "2024";
 
     const response = await fetch(
@@ -1669,13 +1517,12 @@ app.get("/api/standings", async (req, res) => {
         headers: {
           "x-apisports-key": API_KEY,
         },
-      }
+      },
     );
 
     const data = await response.json();
 
-    if (!response.ok || data.errors &&
-        Object.keys(data.errors).length > 0) {
+    if (!response.ok || (data.errors && Object.keys(data.errors).length > 0)) {
       console.error("Standings API error:", data.errors);
 
       return res.status(response.status || 502).json({
@@ -1693,10 +1540,9 @@ app.get("/api/standings", async (req, res) => {
   }
 });
 
-
- // =================================== =======
- // FAVORITE TEAMS AND PLAYERS
- // ==========================================
+// =================================== =======
+// FAVORITE TEAMS AND PLAYERS
+// ==========================================
 
 // GET THE LOGGED-IN USER'S FAVORITE TEAMS
 app.get("/api/favorites/teams", authenticateToken, async (req, res) => {
@@ -1718,7 +1564,7 @@ app.get("/api/favorites/teams", authenticateToken, async (req, res) => {
       WHERE f.user_id = ?
       ORDER BY f.created_at DESC
       `,
-      [req.user.userId]
+      [req.user.userId],
     );
 
     res.json(teams);
@@ -1727,7 +1573,6 @@ app.get("/api/favorites/teams", authenticateToken, async (req, res) => {
     res.status(500).json({ message: "Failed to fetch favorite teams" });
   }
 });
-
 
 // ADD A FAVORITE TEAM
 app.post("/api/favorites/teams", authenticateToken, async (req, res) => {
@@ -1740,7 +1585,7 @@ app.post("/api/favorites/teams", authenticateToken, async (req, res) => {
 
     const [teams] = await db.execute(
       "SELECT id FROM teams WHERE id = ? AND nba_franchise = TRUE",
-      [teamId]
+      [teamId],
     );
 
     if (teams.length === 0) {
@@ -1752,7 +1597,7 @@ app.post("/api/favorites/teams", authenticateToken, async (req, res) => {
       INSERT IGNORE INTO user_favorite_teams (user_id, team_id)
       VALUES (?, ?)
       `,
-      [req.user.userId, teamId]
+      [req.user.userId, teamId],
     );
 
     res.status(200).json({ message: "Favorite team saved successfully" });
@@ -1762,28 +1607,30 @@ app.post("/api/favorites/teams", authenticateToken, async (req, res) => {
   }
 });
 
-
 // REMOVE A FAVORITE TEAM
-app.delete("/api/favorites/teams/:teamId", authenticateToken, async (req, res) => {
-  try {
-    const teamId = Number(req.params.teamId);
+app.delete(
+  "/api/favorites/teams/:teamId",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const teamId = Number(req.params.teamId);
 
-    if (!Number.isSafeInteger(teamId) || teamId <= 0) {
-      return res.status(400).json({ message: "A valid team ID is required" });
+      if (!Number.isSafeInteger(teamId) || teamId <= 0) {
+        return res.status(400).json({ message: "A valid team ID is required" });
+      }
+
+      await db.execute(
+        "DELETE FROM user_favorite_teams WHERE user_id = ? AND team_id = ?",
+        [req.user.userId, teamId],
+      );
+
+      res.json({ message: "Favorite team removed successfully" });
+    } catch (error) {
+      console.error("Remove favorite team error:", error);
+      res.status(500).json({ message: "Failed to remove favorite team" });
     }
-
-    await db.execute(
-      "DELETE FROM user_favorite_teams WHERE user_id = ? AND team_id = ?",
-      [req.user.userId, teamId]
-    );
-
-    res.json({ message: "Favorite team removed successfully" });
-  } catch (error) {
-    console.error("Remove favorite team error:", error);
-    res.status(500).json({ message: "Failed to remove favorite team" });
-  }
-});
-
+  },
+);
 
 // GET THE LOGGED-IN USER'S FAVORITE PLAYERS
 app.get("/api/favorites/players", authenticateToken, async (req, res) => {
@@ -1809,7 +1656,7 @@ app.get("/api/favorites/players", authenticateToken, async (req, res) => {
       WHERE f.user_id = ?
       ORDER BY f.created_at DESC
       `,
-      [req.user.userId]
+      [req.user.userId],
     );
 
     res.json(players);
@@ -1818,7 +1665,6 @@ app.get("/api/favorites/players", authenticateToken, async (req, res) => {
     res.status(500).json({ message: "Failed to fetch favorite players" });
   }
 });
-
 
 // ADD A FAVORITE PLAYER
 app.post("/api/favorites/players", authenticateToken, async (req, res) => {
@@ -1829,10 +1675,9 @@ app.post("/api/favorites/players", authenticateToken, async (req, res) => {
       return res.status(400).json({ message: "A valid player ID is required" });
     }
 
-    const [players] = await db.execute(
-      "SELECT id FROM players WHERE id = ?",
-      [playerId]
-    );
+    const [players] = await db.execute("SELECT id FROM players WHERE id = ?", [
+      playerId,
+    ]);
 
     if (players.length === 0) {
       return res.status(404).json({ message: "Player not found" });
@@ -1843,7 +1688,7 @@ app.post("/api/favorites/players", authenticateToken, async (req, res) => {
       INSERT IGNORE INTO user_favorite_players (user_id, player_id)
       VALUES (?, ?)
       `,
-      [req.user.userId, playerId]
+      [req.user.userId, playerId],
     );
 
     res.status(200).json({ message: "Favorite player saved successfully" });
@@ -1853,35 +1698,37 @@ app.post("/api/favorites/players", authenticateToken, async (req, res) => {
   }
 });
 
-
 // REMOVE A FAVORITE PLAYER
-app.delete("/api/favorites/players/:playerId", authenticateToken, async (req, res) => {
-  try {
-    const playerId = Number(req.params.playerId);
+app.delete(
+  "/api/favorites/players/:playerId",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const playerId = Number(req.params.playerId);
 
-    if (!Number.isSafeInteger(playerId) || playerId <= 0) {
-      return res.status(400).json({ message: "A valid player ID is required" });
+      if (!Number.isSafeInteger(playerId) || playerId <= 0) {
+        return res
+          .status(400)
+          .json({ message: "A valid player ID is required" });
+      }
+
+      await db.execute(
+        "DELETE FROM user_favorite_players WHERE user_id = ? AND player_id = ?",
+        [req.user.userId, playerId],
+      );
+
+      res.json({ message: "Favorite player removed successfully" });
+    } catch (error) {
+      console.error("Remove favorite player error:", error);
+      res.status(500).json({ message: "Failed to remove favorite player" });
     }
-
-    await db.execute(
-      "DELETE FROM user_favorite_players WHERE user_id = ? AND player_id = ?",
-      [req.user.userId, playerId]
-    );
-
-    res.json({ message: "Favorite player removed successfully" });
-  } catch (error) {
-    console.error("Remove favorite player error:", error);
-    res.status(500).json({ message: "Failed to remove favorite player" });
-  }
-});
-
+  },
+);
 
 // ==========================================
 // START SERVER
 // ==========================================
 
 app.listen(PORT, () => {
-  console.log(
-    `Server running on http://localhost:${PORT}`
-  );
+  console.log(`Server running on http://localhost:${PORT}`);
 });
